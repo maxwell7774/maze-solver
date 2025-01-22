@@ -10,26 +10,50 @@ class Cell:
         self.has_right_wall: bool = True
         self.has_top_wall: bool = True
         self.has_bottom_wall: bool = True
-        self.__x1: int | None = None
-        self.__x2: int | None = None
-        self.__y1: int | None = None
-        self.__y2: int | None = None
-        self.__win: Window = win
+        self._x1: int | None = None
+        self._x2: int | None = None
+        self._y1: int | None = None
+        self._y2: int | None = None
+        self._win: Window = win
 
-    def draw(self, x1, y1, x2, y2):
-        self.__x1 = x1
-        self.__x2 = x2
-        self.__y1 = y1
-        self.__y2 = y2
+    def draw(self, x1, y1, x2, y2) -> None:
+        if self._win == None:
+            return
+        self._x1 = x1
+        self._x2 = x2
+        self._y1 = y1
+        self._y2 = y2
         if self.has_left_wall:
             line = Line(Point(x1, y1), Point(x1, y2))
-            self.__win.draw_line(line)
+            self._win.draw_line(line)
         if self.has_top_wall:
             line = Line(Point(x1, y1), Point(x2, y1))
-            self.__win.draw_line(line)
+            self._win.draw_line(line)
         if self.has_right_wall:
             line = Line(Point(x2, y1), Point(x2, y2))
-            self.__win.draw_line(line)
+            self._win.draw_line(line)
         if self.has_bottom_wall:
             line = Line(Point(x1, y2), Point(x2, y2))
-            self.__win.draw_line(line)
+            self._win.draw_line(line)
+
+    def draw_move(self, to_cell: 'Cell', undo: bool=False) -> None:
+        if to_cell._x1 == None or to_cell._x2 == None or to_cell._y1 == None or to_cell._y2 == None:
+            raise Exception("Cell must be drawn first")
+        if self._x1 == None or self._x2 == None or self._y1 == None or self._y2 == None:
+            raise Exception("Cell must be drawn first")
+
+        half_length = abs(self._x2 - self._x1) // 2
+        x_center = half_length + self._x1
+        y_center = half_length + self._y1
+
+        half_length2 = abs(to_cell._x2 - to_cell._x1) // 2
+        x_center2 = half_length2 + to_cell._x1
+        y_center2 = half_length2 + to_cell._y1
+        
+        fill_color = "red"
+        if undo:
+            fill_color = "gray"
+
+        line = Line(Point(x_center, y_center), Point(x_center2, y_center2))
+        self._win.draw_line(line, fill_color)
+
