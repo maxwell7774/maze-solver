@@ -6,12 +6,12 @@ from line import Line
 class Window:
 
     def __init__(self, width: int, height: int) -> None:
-        self.__root = Tk()
+        self.__root: Tk = Tk()
         self.__root.title("Maze Solver")
-        self.canvas = Canvas(width=width, height=height)
-        self.canvas.pack()
-        self.running = False
         self.__root.protocol("WM_DELETE_WINDOW", self.close)
+        self.__canvas: Canvas = Canvas(width=width, height=height)
+        self.__canvas.pack(fill=BOTH, expand=1)
+        self.__running: bool = False
         
 
     def redraw(self) -> None:
@@ -19,13 +19,13 @@ class Window:
         self.__root.update()
 
     def wait_for_close(self) -> None:
-        self.running = True
-        while self.running:
+        self.__running = True
+        while self.__running:
             self.redraw()
 
     def close(self) -> None:
-        self.running = False
+        self.__running = False
 
-    def draw_line(self, line: Line, fill_color: str) -> None:
-        line.draw(self.canvas, fill_color)
+    def draw_line(self, line: Line, fill_color: str="black") -> None:
+        line.draw(self.__canvas, fill_color)
 
